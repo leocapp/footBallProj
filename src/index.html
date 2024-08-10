@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeatAndDrink</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+        <style>
+            /* body {background-color: whitesmoke;}
+
+            table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #d7d7d7;
+        } */
+        .table-button {
+            display: block;
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 2px;
+            text-align: left;
+            cursor: pointer;
+        }
+        .table-button table{
+            width: 100%;
+            border-spacing: 0;
+        }
+        .table-button:hover {
+            background-color: #2b4864;
+        }
+        .table-button:focus {
+            outline: none;
+        }
+        .table-button td {
+            padding: 8px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        #side-tables-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .side-table {
+            width: 45%; /* Adjust width as needed */
+        }
+
+        .side-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .side-table th, .side-table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        #main-table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #main-table-container th, #main-table-container td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        </style>
+    </head>
+        <body>
+            
+            <h2>Meat And Drink</h2>
+            <h4>Select Player</h4>
+
+            <div class="conainer">
+                <table id="master-data-table" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Team</th>
+                            <th>Nationality</th>
+                            <th>Height</th>
+                            <th>Position</th>
+                            <th>Position</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div id="side-tables-container">
+                <div class="side-table">
+                    <table id="left-table">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Team</th>
+                                <th>Nationality</th>
+                                <th>Height</th>
+                                <th>Position</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows moved here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="side-table">
+                    <table id="right-table">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Team</th>
+                                <th>Nationality</th>
+                                <th>Height</th>
+                                <th>Position</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows moved here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        let useLeftTable = true; // Toggle between left and right tables
+
+        document.addEventListener("DOMContentLoaded", function() {
+            /* const apiUrl = 'https://v3.football.api-sports.io/players?league=39&season=2023';
+
+            fetch(apiUrl, {
+                "method": "GET",
+                "headers": {
+                    "x-rapidapi-host": "v3.football.api-sports.io",
+                    "x-rapidapi-key": "a118124bbf4bda9980bf94c8d4b030c7" // Replace with your actual API key
+                }
+            }) */
+            fetch('./mock-data.json')
+            .then(response => response.json())
+            .then(data => {
+                
+                const tableBody = document.querySelector('#master-data-table tbody');
+                tableBody.innerHTML = ''; // Clear existing table rows
+
+                // Assuming data.response is the array of players
+                data.response.forEach(item => {
+                const rowButton = document.createElement('button');
+                rowButton.className = 'table-button';
+                    //const row = document.createElement('tr');
+
+                    // Create a row with the desired data
+                    rowButton.innerHTML = `
+                        <td><img src="${item.player.photo}" alt="${item.player.name}" style="width:35px;height:auto;"></td>
+                        <td>${item.player.name}</td>
+                        <td>${item.player.age}</td>
+                        <td><img src="${item.statistics[0].team.logo}" alt="${item.statistics[0].team.logo}" style="width:35px;height:auto;"></td>
+                        <td>${item.player.nationality}</td>
+                        <td>${item.player.height}</td>
+                        <td>${item.statistics[0].games.position}</td>
+                        <td>${item.statistics[0].shots.total}</td>
+                    `;
+
+                    rowButton.addEventListener('click', () => {
+                        const row = event.currentTarget.closest('tr');
+                        const targetTableBody = document.querySelector(useLeftTable ? '#left-table tbody' : '#right-table tbody');
+                        // Clone the row to keep the content intact
+                        const clonedRow = row.cloneNode(true);
+                        // Remove the row from the top table
+                        row.remove();
+                        // Add the cloned row to the selected table (e.g., left table)
+                        targetTableBody.appendChild(clonedRow);
+                        useLeftTable = !useLeftTable;
+                    });
+
+                    // Append the button (row) to the table body
+                    const rowContainer = document.createElement('tr');
+                    const cellContainer = document.createElement('td');
+                    cellContainer.colSpan = 7;
+                    cellContainer.appendChild(rowButton);
+                    rowContainer.appendChild(cellContainer);
+                    tableBody.appendChild(rowContainer);
+                });
+            })
+            .catch(err => console.error('Error fetching data:', err));
+        });
+    </script>
+        </body>
+</html>
